@@ -10,7 +10,7 @@ on:
 
 jobs:
   check:
-    name: Lint e import (Python ${{ matrix.python }})
+    name: Lint and import (Python ${{ matrix.python }})
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -25,7 +25,7 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: pip
 
-      - name: Installa le dipendenze
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -34,28 +34,32 @@ jobs:
       - name: Ruff
         run: ruff check .
 
-      - name: Compila tutti i moduli
+      - name: Byte-compile every module
         run: python -m compileall -q core ui main.py version.py
 
-      # I moduli core non dipendono dall'interfaccia, quindi si importano
-      # anche su un runner senza display: è il test più utile che la CI può
-      # fare senza una suite vera.
-      - name: Importa i moduli core
+      # The core modules have no dependency on the UI, so they import even on a
+      # runner without a display: the most useful check CI can do without a
+      # real test suite.
+      - name: Import the core modules
         run: |
           python -c "import version; print(version.APP_NAME, version.__version__)"
           python -c "from core.scanner import Scanner, FileInfo; print('scanner ok')"
-          python -c "from core.organizer import Organizer, CATEGORIES; print('organizer ok,', len(CATEGORIES), 'categorie')"
-          python -c "from core.ai_classifier import AIClassifier; print('classifier ok,', len(AIClassifier.ALLOWED_CATEGORIES), 'categorie ammesse')"
+          python -c "from core.organizer import Organizer, CATEGORIES; print('organizer ok,', len(CATEGORIES), 'categories')"
+          python -c "from core.ai_classifier import AIClassifier; print('classifier ok,', len(AIClassifier.ALLOWED_CATEGORIES), 'allowed categories')"
           python -c "from core.settings import Settings, data_dir; print('settings ok')"
 
-      - name: La pianificazione non deve scrivere sul disco
+      - name: Planning must not write to disk
         run: python .github/scripts/check_plan_is_pure.py
 
   build:
-    name: Build .exe
+    name: Build and publish the release
     needs: check
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: windows-latest
+
+    # Needed by `gh release create` to create the release and upload the asset.
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -65,11 +69,13 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Installa le dipendenze
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
 
+      # --collect-all customtkinter is required: the library loads its own theme
+      # files at runtime and without it the onefile exe starts and exits at once.
       - name: PyInstaller
         run: >
           pyinstaller --noconsole --onefile
@@ -82,3 +88,44 @@ jobs:
           name: SmartFileOrganizer-${{ github.ref_name }}
           path: dist/SmartFileOrganizer.exe
           if-no-files-found: error
+
+      - name: Create the GitHub release and attach the executable
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          SHA=$(sha256sum dist/SmartFileOrganizer.exe | cut -d' ' -f1)
+          SIZE=$(( $(stat -c%s dist/SmartFileOrganizer.exe) / 1048576 ))
+
+          cat > notes.md <<EOF
+          Standalone Windows executable — no Python installation required.
+
+          **Note:** the user interface and the folder names the app creates are
+          in Italian. See the [README](https://github.com/${GITHUB_REPOSITORY}#readme)
+          for what to expect, and the
+          [changelog](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md)
+          for what changed in this version.
+
+          ### Verify your download
+
+          \`SmartFileOrganizer.exe\` — ${SIZE} MB
+
+          \`\`\`
+          SHA-256  ${SHA}
+          \`\`\`
+
+          \`\`\`powershell
+          Get-FileHash .\\SmartFileOrganizer.exe -Algorithm SHA256
+          \`\`\`
+
+          Built from \`${GITHUB_SHA}\` by this workflow run, not on a developer
+          machine, so the binary carries no personal paths.
+          EOF
+
+          gh release create "${GITHUB_REF_NAME}" \
+            dist/SmartFileOrganizer.exe \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Smart File Organizer ${GITHUB_REF_NAME}" \
+            --notes-file notes.md \
+            --verify-tag

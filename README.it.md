@@ -222,9 +222,9 @@ corrisponde a qualcosa che è già andato storto una volta.
 ## 🤝 Contribuire
 
 Le modifiche sono benvenute — la licenza ti autorizza esplicitamente a
-modificare il codice. Leggi [CONTRIBUTING.md](CONTRIBUTING.md) per
-l'impostazione dell'ambiente e il metodo di verifica delle modifiche che
-toccano lo spostamento dei file.
+modificare il codice. Leggi [CONTRIBUTING.md](CONTRIBUTING.md) (in inglese,
+come il resto della documentazione tecnica) per l'impostazione dell'ambiente e
+il metodo di verifica delle modifiche che toccano lo spostamento dei file.
 
 ---
 
