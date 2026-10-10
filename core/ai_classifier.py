@@ -137,7 +137,9 @@ class AIClassifier:
                 {"role": "user",   "content": user},
             ],
             "temperature": 0.1,
-            "max_tokens": 80,
+            # Generation dominates the per-document cost, and the answer is one
+            # short JSON object: ~30 tokens. Anything beyond this is latency.
+            "max_tokens": 48,
         }
         if self.model:
             payload["model"] = self.model

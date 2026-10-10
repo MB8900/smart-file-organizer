@@ -71,9 +71,39 @@ outside `localhost`.
 
 ### Option A — executable
 
-Download `SmartFileOrganizer.exe` from the
-[Releases](https://github.com/MB8900/smart-file-organizer/releases) page. No
-Python needed.
+From the [Releases](https://github.com/MB8900/smart-file-organizer/releases)
+page, no Python needed:
+
+| File | Notes |
+|------|-------|
+| `SmartFileOrganizer.exe` | Single file, just run it |
+| `SmartFileOrganizer-vX.Y.Z-portable.zip` | Unpack and run the exe inside. Try this if the single file is blocked |
+
+#### Windows will warn you about the download
+
+Your browser or SmartScreen will likely say the file isn't commonly
+downloaded, or that the publisher is unknown. **This is expected, and it will
+happen to everyone.** Three reasons stack up:
+
+- The build isn't code-signed. A certificate is a recurring cost this project
+  doesn't carry.
+- A brand new binary has no download reputation, and SmartScreen treats
+  "never seen before" as a reason for caution.
+- The single-file build unpacks itself into a temp folder at startup — which
+  is structurally what malware droppers do, so heuristics flag the shape
+  regardless of what the program actually does. The portable ZIP doesn't
+  self-extract and tends to trip fewer alarms.
+
+You don't have to take any of that on trust. Every binary is produced by a
+[public workflow run](https://github.com/MB8900/smart-file-organizer/actions)
+on GitHub's runners, from a named commit, and the sources are right here. Each
+release lists the SHA-256 of its files:
+
+```powershell
+Get-FileHash .\SmartFileOrganizer.exe -Algorithm SHA256
+```
+
+If the hash doesn't match the one on the release page, don't run it.
 
 ### Option B — from source
 

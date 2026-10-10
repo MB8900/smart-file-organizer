@@ -57,7 +57,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: windows-latest
 
-    # Needed by `gh release create` to create the release and upload the asset.
+    # Needed by `gh release create` to create the release and upload the assets.
     permissions:
       contents: write
 
@@ -74,32 +74,59 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
 
-      # --collect-all customtkinter is required: the library loads its own theme
-      # files at runtime and without it the onefile exe starts and exits at once.
-      - name: PyInstaller
+      # --collect-all customtkinter is required in both builds: the library
+      # loads its own theme files at runtime and without it the app starts and
+      # exits at once.
+      - name: PyInstaller — single file
         run: >
           pyinstaller --noconsole --onefile
           --name SmartFileOrganizer
           --collect-all customtkinter
+          --distpath dist/onefile --workpath build/onefile
           main.py
+
+      # A --onedir build is shipped alongside it because --onefile unpacks
+      # itself into a temp folder at startup, which is structurally what
+      # droppers do and is one of the most frequently flagged heuristics.
+      # The folder build does not self-extract and tends to be flagged less.
+      - name: PyInstaller — portable folder
+        run: >
+          pyinstaller --noconsole --onedir
+          --name SmartFileOrganizer
+          --collect-all customtkinter
+          --distpath dist/onedir --workpath build/onedir
+          main.py
+
+      - name: Zip the portable build
+        run: >
+          Compress-Archive
+          -Path dist/onedir/SmartFileOrganizer
+          -DestinationPath "dist/SmartFileOrganizer-${env:GITHUB_REF_NAME}-portable.zip"
 
       - uses: actions/upload-artifact@v4
         with:
           name: SmartFileOrganizer-${{ github.ref_name }}
-          path: dist/SmartFileOrganizer.exe
+          path: |
+            dist/onefile/SmartFileOrganizer.exe
+            dist/*-portable.zip
           if-no-files-found: error
 
-      - name: Create the GitHub release and attach the executable
+      - name: Create the GitHub release and attach the builds
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          SHA=$(sha256sum dist/SmartFileOrganizer.exe | cut -d' ' -f1)
-          SIZE=$(( $(stat -c%s dist/SmartFileOrganizer.exe) / 1048576 ))
+          EXE="dist/onefile/SmartFileOrganizer.exe"
+          ZIP="dist/SmartFileOrganizer-${GITHUB_REF_NAME}-portable.zip"
+
+          EXE_SHA=$(sha256sum "$EXE" | cut -d' ' -f1)
+          ZIP_SHA=$(sha256sum "$ZIP" | cut -d' ' -f1)
+          EXE_MB=$(( $(stat -c%s "$EXE") / 1048576 ))
+          ZIP_MB=$(( $(stat -c%s "$ZIP") / 1048576 ))
 
           cat > notes.md <<EOF
-          Standalone Windows executable — no Python installation required.
+          Standalone Windows build — no Python installation required.
 
           **Note:** the user interface and the folder names the app creates are
           in Italian. See the [README](https://github.com/${GITHUB_REPOSITORY}#readme)
@@ -107,12 +134,34 @@ jobs:
           [changelog](https://github.com/${GITHUB_REPOSITORY}/blob/main/CHANGELOG.md)
           for what changed in this version.
 
+          ### Which one to download
+
+          | File | Size | Notes |
+          |------|------|-------|
+          | \`SmartFileOrganizer.exe\` | ${EXE_MB} MB | Single file, just run it |
+          | \`SmartFileOrganizer-${GITHUB_REF_NAME}-portable.zip\` | ${ZIP_MB} MB | Unpack and run the exe inside. Try this one if the single file is blocked |
+
+          ### Windows will warn you
+
+          Your browser or Windows SmartScreen will likely say the file is not
+          commonly downloaded, or that the publisher is unknown. **This is
+          expected.** The build is not code-signed — a certificate is a
+          recurring cost this project does not carry — and a brand new binary
+          has no download reputation yet. The single-file build also unpacks
+          itself at startup, a pattern antivirus heuristics treat with
+          suspicion regardless of what the program does.
+
+          You do not have to take that on trust. Every build is produced by a
+          [public workflow run](https://github.com/${GITHUB_REPOSITORY}/actions)
+          from the exact commit below, on GitHub's own runners, and the sources
+          are in this repository. Check the hash of what you downloaded against
+          the values here.
+
           ### Verify your download
 
-          \`SmartFileOrganizer.exe\` — ${SIZE} MB
-
           \`\`\`
-          SHA-256  ${SHA}
+          SHA-256  ${EXE_SHA}  SmartFileOrganizer.exe
+          SHA-256  ${ZIP_SHA}  SmartFileOrganizer-${GITHUB_REF_NAME}-portable.zip
           \`\`\`
 
           \`\`\`powershell
@@ -120,11 +169,11 @@ jobs:
           \`\`\`
 
           Built from \`${GITHUB_SHA}\` by this workflow run, not on a developer
-          machine, so the binary carries no personal paths.
+          machine, so the binaries carry no personal paths.
           EOF
 
           gh release create "${GITHUB_REF_NAME}" \
-            dist/SmartFileOrganizer.exe \
+            "$EXE" "$ZIP" \
             --repo "${GITHUB_REPOSITORY}" \
             --title "Smart File Organizer ${GITHUB_REF_NAME}" \
             --notes-file notes.md \

@@ -66,9 +66,41 @@ rete al di fuori di `localhost`.
 
 ### Opzione A — eseguibile
 
-Scarica `SmartFileOrganizer.exe` dalla pagina
-[Releases](https://github.com/MB8900/smart-file-organizer/releases). Non
-richiede Python.
+Dalla pagina [Releases](https://github.com/MB8900/smart-file-organizer/releases),
+senza bisogno di Python:
+
+| File | Note |
+|------|------|
+| `SmartFileOrganizer.exe` | File unico, si avvia e basta |
+| `SmartFileOrganizer-vX.Y.Z-portable.zip` | Da scompattare, l'exe è dentro. Prova questo se il file unico viene bloccato |
+
+#### Windows ti avviserà del download
+
+Il browser o SmartScreen diranno con ogni probabilità che il file non è
+scaricato di frequente, o che l'editore è sconosciuto. **È previsto, e capita
+a chiunque.** Si sommano tre motivi:
+
+- L'eseguibile non è firmato. Un certificato di code signing è una spesa
+  ricorrente che questo progetto non sostiene.
+- Un binario appena pubblicato non ha reputazione, e SmartScreen tratta
+  "mai visto prima" come motivo di cautela.
+- La versione a file unico si scompatta da sola in una cartella temporanea
+  all'avvio: è strutturalmente il comportamento dei dropper malevoli, quindi
+  le euristiche degli antivirus segnalano la forma a prescindere da cosa fa
+  davvero il programma. Lo ZIP portatile non si auto-estrae e in genere fa
+  scattare meno allarmi.
+
+Non devi crederci sulla parola. Ogni binario è prodotto da una
+[esecuzione pubblica del workflow](https://github.com/MB8900/smart-file-organizer/actions)
+sui runner di GitHub, a partire da un commit dichiarato, e i sorgenti sono
+qui. Ogni release riporta lo SHA-256 dei suoi file:
+
+```powershell
+Get-FileHash .\SmartFileOrganizer.exe -Algorithm SHA256
+```
+
+Se l'impronta non coincide con quella sulla pagina della release, non
+eseguirlo.
 
 ### Opzione B — da sorgente
 
