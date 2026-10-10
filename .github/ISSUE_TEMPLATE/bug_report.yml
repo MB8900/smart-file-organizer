@@ -1,0 +1,88 @@
+name: Segnala un problema
+description: Il programma ha fatto qualcosa di diverso da quello che ti aspettavi
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Prima di procedere
+
+        **Non allegare `undo_history.json`.** Contiene i percorsi completi dei
+        tuoi file. Se serve, incolla solo le righe pertinenti dopo averle
+        ripulite.
+
+        Se il programma ha spostato file in modo inatteso, prova
+        **Cronologia → Annulla Ultima Sessione** prima di qualunque altra cosa:
+        è la via più diretta per tornare indietro.
+
+  - type: input
+    id: versione
+    attributes:
+      label: Versione
+      description: La trovi in Aiuto → Informazioni
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: avvio
+    attributes:
+      label: Come lo esegui
+      options:
+        - Eseguibile .exe
+        - Da sorgente con Python
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Sistema operativo
+      placeholder: "Windows 11 Home 24H2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ai
+    attributes:
+      label: Backend AI attivo
+      description: Lo indica il badge in alto nella finestra
+      options:
+        - Nessuno (AI offline)
+        - LM Studio
+        - Ollama
+        - Non lo so
+    validations:
+      required: true
+
+  - type: textarea
+    id: atteso
+    attributes:
+      label: Cosa ti aspettavi
+    validations:
+      required: true
+
+  - type: textarea
+    id: accaduto
+    attributes:
+      label: Cosa è accaduto invece
+      description: Se riguarda file spostati o cartelle rimosse, indica quanti e dove
+    validations:
+      required: true
+
+  - type: textarea
+    id: passi
+    attributes:
+      label: Passi per riprodurre
+      placeholder: |
+        1. Seleziono la cartella …
+        2. Attivo le opzioni …
+        3. Genero il piano e …
+    validations:
+      required: true
+
+  - type: textarea
+    id: opzioni
+    attributes:
+      label: Opzioni attive
+      description: Duplicati, sottocartelle per data, classificazione AI, rimozione cartelle vuote

@@ -1,0 +1,14 @@
+# Normalizza i fine riga nel repository: LF in archivio, conversione a seconda
+# della piattaforma in copia di lavoro. Evita diff fittizi fra Windows e Linux.
+* text=auto eol=lf
+
+# Gli script batch devono restare CRLF o cmd.exe li interpreta male.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binari: nessuna conversione.
+*.ico binary
+*.png binary
+*.jpg binary
+*.exe binary
+*.pdf binary

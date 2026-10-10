@@ -1,0 +1,32 @@
+name: Proponi una funzionalità
+description: Un'idea per rendere il programma più utile
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Quale problema risolve
+      description: Descrivi la situazione concreta, non la soluzione
+      placeholder: "Quando riordino la cartella delle scansioni, …"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Cosa proponi
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: invarianti
+    attributes:
+      label: Compatibilità con gli invarianti
+      description: >
+        Vedi docs/ARCHITECTURE.md, sezione Invarianti di sicurezza.
+        Serve solo a inquadrare la proposta, non è un ostacolo.
+      options:
+        - label: La proposta non richiede che la pianificazione scriva sul disco
+        - label: La proposta non richiede di eseguire senza anteprima
+        - label: La proposta non richiede cancellazioni non annullabili
+        - label: Non lo so / non sono sicuro
