@@ -1,6 +1,6 @@
 [project]
 name = "smart-file-organizer"
-version = "1.0.0"
+version = "1.1.0"
 description = "Riordina una cartella per tipo, trova i duplicati per contenuto e classifica i documenti con un LLM locale."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -3,7 +3,7 @@
 This file follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and
 the project uses [semantic versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] — 2026-10-10
 
 ### Changed
 - **AI classification now runs 8 requests at a time instead of one.** Measured

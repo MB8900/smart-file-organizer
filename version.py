@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 APP_NAME = "Smart File Organizer"
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 RELEASE_DATE = "2026-10-10"
 
 AUTHOR = "Marber (MB8900)"
