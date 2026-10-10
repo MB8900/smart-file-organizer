@@ -1,9 +1,11 @@
+**English** · [Italiano](README.it.md)
+
 # 📁 Smart File Organizer
 
-> Riordina una cartella disordinata: raggruppa i file per tipo, riconosce i
-> duplicati confrontandone il contenuto e usa un modello AI locale per capire
-> di cosa parlano i tuoi documenti. Niente si muove senza che tu l'abbia visto
-> prima, e ogni esecuzione è annullabile.
+> Tidies up a messy folder: groups files by type, spots duplicates by comparing
+> their contents, and uses a local AI model to work out what your documents are
+> actually about. Nothing moves until you've seen it first, and every run can
+> be undone.
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776ab?logo=python&logoColor=white)](https://www.python.org)
 [![License](https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-ad1457)](LICENSE)
@@ -12,63 +14,68 @@
 [![AI](https://img.shields.io/badge/AI-LM%20Studio%20%7C%20Ollama-ff6b35)](https://lmstudio.ai)
 [![CI](https://github.com/MB8900/smart-file-organizer/actions/workflows/ci.yml/badge.svg)](https://github.com/MB8900/smart-file-organizer/actions/workflows/ci.yml)
 
----
-
-## ⚖️ Licenza in breve
-
-Questo programma è **gratuito e modificabile, ma non utilizzabile
-commercialmente**.
-
-| Puoi | Non puoi |
-|------|----------|
-| Usarlo per te, senza limiti di tempo | Venderlo, o venderne una versione modificata |
-| Studiare e modificare il codice come vuoi | Usarlo nell'attività di un'azienda |
-| Redistribuirlo, anche modificato | Offrirlo come servizio a pagamento |
-| Usarlo in scuole, enti pubblici, ONLUS | Includerlo in un prodotto commerciale |
-
-Licenza: **[PolyForm Noncommercial 1.0.0](LICENSE)**. Uso personale, studio,
-ricerca, hobby, enti pubblici e organizzazioni non profit rientrano tutti negli
-scopi permessi.
-
-> **Nota per chi conosce l'argomento:** una licenza non commerciale non è
-> "open source" secondo la definizione OSI, che non ammette restrizioni sul
-> campo di impiego. GitHub la segnalerà come licenza non standard. Il codice è
-> comunque leggibile, modificabile e redistribuibile: è *source available* con
-> clausola non commerciale, che è esattamente l'intento.
+> **Heads up:** the interface, the built-in guide and the folder names the app
+> creates are in **Italian**. The code, this README and
+> [the architecture docs](docs/ARCHITECTURE.md) are in English. Category names
+> live in one dictionary in `core/organizer.py`, so translating them is a
+> single-file change — see the Categories section below.
 
 ---
 
-## ✨ Cosa fa
+## ⚖️ License in short
 
-| Funzione | Descrizione |
-|----------|-------------|
-| 🔍 **Scansione ricorsiva** | Thread separato, interrompibile anche a metà di un file da diversi GB |
-| 🔑 **Duplicati per contenuto** | Impronta SHA-256 letta a blocchi: stesso contenuto byte per byte, nomi e date irrilevanti |
-| 🗂️ **Smistamento per tipo** | 8 categorie — Immagini, Video, Documenti, Audio, Archivi, Eseguibili, Codice, Font |
-| 📅 **Date adattive** | Sottocartelle Anno/Mese che scendono solo dove i file sono abbastanza da giustificarle |
-| 🤖 **Classificazione AI** | LLM locale via LM Studio o Ollama: legge PDF/DOCX/TXT e propone categoria e nome file |
-| 👁️ **Anteprima obbligatoria** | La tabella delle operazioni prima di ogni scrittura. Senza piano, il pulsante è spento |
-| ↩️ **UNDO completo** | Ogni esecuzione è una sessione annullabile per intero |
-| 🧭 **Guida al primo avvio** | Tour in 8 passi che pilota le schede mentre le spiega |
-| 🎨 **Tema adattivo** | Chiaro / Scuro / Sistema |
+This program is **free and modifiable, but not for commercial use**.
+
+| You may | You may not |
+|---------|-------------|
+| Use it yourself, with no time limit | Sell it, or sell a modified version |
+| Study and modify the code however you like | Use it in the course of a business |
+| Redistribute it, modified or not | Offer it as a paid service |
+| Use it in schools, public bodies, non-profits | Bundle it into a commercial product |
+
+License: **[PolyForm Noncommercial 1.0.0](LICENSE)**. Personal use, study,
+research, hobby projects, public institutions and non-profit organizations all
+count as permitted purposes.
+
+> **If you follow licensing closely:** a noncommercial license is not "open
+> source" by the OSI definition, which disallows field-of-use restrictions.
+> GitHub will flag it as a non-standard license. The code is still readable,
+> modifiable and redistributable: it's *source available* with a noncommercial
+> clause, which is exactly the intent.
+
+---
+
+## ✨ What it does
+
+| Feature | Description |
+|---------|-------------|
+| 🔍 **Recursive scan** | Runs on its own thread, interruptible even partway through a multi-GB file |
+| 🔑 **Duplicates by content** | SHA-256 fingerprint read in chunks: identical byte for byte, names and dates irrelevant |
+| 🗂️ **Sorting by type** | 8 categories — images, video, documents, audio, archives, executables, code, fonts |
+| 📅 **Adaptive date folders** | Year/Month subfolders that only go deeper where there are enough files to justify it |
+| 🤖 **AI classification** | Local LLM via LM Studio or Ollama: reads PDF/DOCX/TXT and suggests a category and filename |
+| 👁️ **Mandatory preview** | The table of operations before any write. With no plan, the button stays off |
+| ↩️ **Full undo** | Every run is a session that can be reversed in its entirety |
+| 🧭 **First-run walkthrough** | An 8-step tour that drives the tabs while it explains them |
+| 🎨 **Adaptive theme** | Light / Dark / System |
 
 ### Privacy
 
-Tutto resta sul tuo computer. Il modello AI gira in locale: nessun documento
-viene inviato a servizi esterni, e il programma non effettua connessioni di
-rete al di fuori di `localhost`.
+Everything stays on your machine. The AI model runs locally: no document is
+sent to an external service, and the program makes no network connections
+outside `localhost`.
 
 ---
 
-## 🚀 Installazione
+## 🚀 Installation
 
-### Opzione A — eseguibile
+### Option A — executable
 
-Scarica `SmartFileOrganizer.exe` dalla pagina
-[Releases](https://github.com/MB8900/smart-file-organizer/releases). Non
-richiede Python.
+Download `SmartFileOrganizer.exe` from the
+[Releases](https://github.com/MB8900/smart-file-organizer/releases) page. No
+Python needed.
 
-### Opzione B — da sorgente
+### Option B — from source
 
 ```bash
 git clone https://github.com/MB8900/smart-file-organizer.git
@@ -79,160 +86,171 @@ pip install -r requirements.txt
 python main.py
 ```
 
-> Su Windows, se `python` risolve all'interprete sbagliato (capita quando altri
-> programmi ne installano uno proprio), usa il launcher: `py -3.12 main.py`.
-> `py -0p` elenca le versioni disponibili.
+> On Windows, if `python` resolves to the wrong interpreter (it happens when
+> other programs install one of their own), use the launcher:
+> `py -3.12 main.py`. `py -0p` lists the versions available.
 
-### Abilitare la classificazione AI (opzionale)
+### Enabling AI classification (optional)
 
-Serve uno dei due, in ascolto in locale:
+You need one of these listening locally:
 
-| | Porta | Come |
+| | Port | How |
 |---|---|---|
-| [LM Studio](https://lmstudio.ai) | 1234 | Carica un modello e avvia il server locale |
+| [LM Studio](https://lmstudio.ai) | 1234 | Load a model and start the local server |
 | [Ollama](https://ollama.com) | 11434 | `ollama pull llama3.2` |
 
-L'app li rileva da sola all'avvio e il badge in alto diventa verde. Se nessuno
-dei due è attivo, la funzione si disabilita e il programma lavora sulla
-classificazione per estensione — nessun errore, nessun blocco.
+The app detects either one by itself at startup and the badge at the top turns
+green. If neither is running, the feature disables itself and the program falls
+back to sorting by extension — no error, nothing blocked.
 
-Per documenti in italiano un modello da 7-8 miliardi di parametri è un buon
-compromesso: circa 3 secondi per documento su una GPU di fascia media.
+A 7-8 billion parameter model is a good trade-off: roughly 3 seconds per
+document on a mid-range GPU.
 
 ---
 
-## 🖥️ Come si usa
+## 🖥️ How to use it
 
-Il flusso è sempre lo stesso, e le schede avanzano da sole:
+The flow is always the same, and the tabs advance on their own:
 
 ```
 Scansione  →  Risultati  →  Anteprima  →  Cronologia
- opzioni      statistiche   tabella       sessioni
- e avvio      e tabella     operazioni    e UNDO
+  (scan)      (results)     (preview)     (history)
+ options      statistics    operations     sessions
+ and start    and table     table          and undo
 ```
 
-1. **Scansione** — scegli la cartella sorgente e la destinazione (lasciandola
-   vuota, riordina dentro la sorgente), spunta le opzioni, avvia.
-2. **Risultati** — file trovati, duplicati, spazio occupato, categorie.
-3. **Anteprima** — la tabella completa: sorgente, destinazione, operazione.
-   Niente è ancora stato toccato. Se non ti convince, cambia le opzioni e
-   rigenera quante volte vuoi.
-4. **Esegui** — conferma. Ogni operazione viene registrata.
-5. **Cronologia** — **Annulla Ultima Sessione** rimette tutto dov'era.
+1. **Scan** — pick the source folder and the destination (leave it empty to
+   reorganize inside the source), tick the options, start.
+2. **Results** — files found, duplicates, space used, categories.
+3. **Preview** — the full table: source, destination, operation. Nothing has
+   been touched yet. If it doesn't convince you, change the options and
+   regenerate as many times as you like.
+4. **Execute** — confirm. Every operation is recorded.
+5. **History** — **Annulla Ultima Sessione** (undo last session) puts
+   everything back where it was.
 
-### Gestione duplicati
+### Duplicate handling
 
-| Opzione | Comportamento | Reversibile |
-|---------|---------------|-------------|
-| Sposta in 'Duplicati' | Li raccoglie in una cartella dedicata | Sì, dall'app |
-| Invia al Cestino | `send2trash` | Sì, dal Cestino di Windows |
-| Elimina definitivamente | Rimozione immediata | **No** |
+| Option | Behaviour | Reversible |
+|--------|-----------|------------|
+| Move to 'Duplicati' | Collects them in a dedicated folder | Yes, from the app |
+| Send to Recycle Bin | `send2trash` | Yes, from the Windows Recycle Bin |
+| Delete permanently | Removed immediately | **No** |
 
-### Dove finiscono i dati dell'app
+### Where the app keeps its data
 
-Cronologia UNDO e preferenze stanno in `%APPDATA%\SmartFileOrganizer`, non
-accanto all'eseguibile. Ci arrivi da **Strumenti → Apri cartella dati**.
+The undo history and preferences live in `%APPDATA%\SmartFileOrganizer`, not
+next to the executable. You can open it from **Strumenti → Apri cartella dati**
+(Tools → Open data folder).
 
-> `undo_history.json` contiene i percorsi completi dei tuoi file. È escluso dal
-> versionamento e non va allegato a una segnalazione di problema.
+> `undo_history.json` contains the full paths of your files. It's excluded from
+> version control and should never be attached to a bug report.
 
 ---
 
-## 📦 Build dell'eseguibile
+## 📦 Building the executable
 
 ```bat
 build.bat
 ```
 
-Oppure a mano:
+Or by hand:
 
 ```bash
 pip install pyinstaller
 pyinstaller --noconsole --onefile --collect-all customtkinter --icon=assets\icon.ico --name=SmartFileOrganizer main.py
 ```
 
-Il risultato in `dist\SmartFileOrganizer.exe` è autonomo: nessun Python
-necessario sul PC di destinazione.
+The result in `dist\SmartFileOrganizer.exe` is self-contained: no Python needed
+on the target machine.
 
-> Aggiungi la tua icona in `assets\icon.ico` (256×256, ICO multi-risoluzione)
-> prima della build, oppure togli l'opzione `--icon`.
+> Add your own icon at `assets\icon.ico` (256×256, multi-resolution ICO) before
+> building, or drop the `--icon` flag.
+>
+> PyInstaller embeds the build directory into the binary, so a locally built
+> executable carries your own username in its path. Prefer the CI-built
+> artifact when publishing.
 
 ---
 
-## 📂 Struttura
+## 📂 Layout
 
 ```
 smart-file-organizer/
 ├── main.py                       Entry point
-├── version.py                    Nome, versione, autore, licenza
-├── pyproject.toml                Metadati e configurazione ruff
+├── version.py                    Name, version, author, license
+├── pyproject.toml                Metadata and ruff configuration
 ├── requirements.txt
-├── build.bat                     Build Windows → .exe
+├── build.bat                     Windows build → .exe
 ├── LICENSE                       PolyForm Noncommercial 1.0.0
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
 ├── docs/
-│   └── ARCHITECTURE.md           Funzionamento tecnico del codice
-├── core/                         Logica, nessuna dipendenza dall'interfaccia
-│   ├── scanner.py                Attraversamento filesystem + SHA-256
-│   ├── organizer.py              Categorie, pianificazione, esecuzione, UNDO
-│   ├── ai_classifier.py          Classificazione via LLM locale
-│   └── settings.py               Percorsi dati utente e preferenze
+│   └── ARCHITECTURE.md           How the code works, technically
+├── core/                         Logic, no dependency on the UI
+│   ├── scanner.py                Filesystem traversal + SHA-256
+│   ├── organizer.py              Categories, planning, execution, undo
+│   ├── ai_classifier.py          Classification via local LLM
+│   └── settings.py               Per-user data paths and preferences
 └── ui/
-    ├── app.py                    Finestra principale e schede
-    └── dialogs.py                Informazioni e tour guidato
+    ├── app.py                    Main window and tabs
+    └── dialogs.py                About window and guided tour
 ```
 
 ---
 
-## 🗂️ Categorie
+## 🗂️ Categories
 
-| Categoria | Estensioni |
-|-----------|-----------|
-| Immagini | `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.webp` `.tiff` `.heic` `.raw` `.svg` |
-| Video | `.mp4` `.mkv` `.avi` `.mov` `.wmv` `.flv` `.webm` `.m4v` |
-| Documenti | `.pdf` `.doc` `.docx` `.xls` `.xlsx` `.ppt` `.pptx` `.txt` `.csv` `.odt` |
-| Audio | `.mp3` `.wav` `.flac` `.aac` `.ogg` `.wma` `.m4a` `.opus` |
-| Archivi | `.zip` `.rar` `.7z` `.tar` `.gz` `.bz2` `.xz` `.iso` |
-| Eseguibili | `.exe` `.msi` `.bat` `.cmd` `.ps1` `.appx` |
-| Codice | `.py` `.js` `.ts` `.html` `.css` `.java` `.go` `.rs` `.cs` |
-| Font | `.ttf` `.otf` `.woff` `.woff2` |
-| Altro | tutto il resto |
+Folder names are the Italian ones the app creates. They're defined in the
+`CATEGORIES` dictionary in `core/organizer.py` — rename the keys there and the
+whole program follows, since `get_category()` reads from that one map.
 
-Con la classificazione AI attiva, i documenti possono finire in categorie di
-merito al posto del generico `Documenti`: Fatture, Contratti, Ricevute,
-Rapporti, Manuali, Lettere, CV, Presentazioni, Ricerca, Moduli.
+| Folder | English | Extensions |
+|--------|---------|-----------|
+| Immagini | Images | `.jpg` `.jpeg` `.png` `.gif` `.bmp` `.webp` `.tiff` `.heic` `.raw` `.svg` |
+| Video | Video | `.mp4` `.mkv` `.avi` `.mov` `.wmv` `.flv` `.webm` `.m4v` |
+| Documenti | Documents | `.pdf` `.doc` `.docx` `.xls` `.xlsx` `.ppt` `.pptx` `.txt` `.csv` `.odt` |
+| Audio | Audio | `.mp3` `.wav` `.flac` `.aac` `.ogg` `.wma` `.m4a` `.opus` |
+| Archivi | Archives | `.zip` `.rar` `.7z` `.tar` `.gz` `.bz2` `.xz` `.iso` |
+| Eseguibili | Executables | `.exe` `.msi` `.bat` `.cmd` `.ps1` `.appx` |
+| Codice | Code | `.py` `.js` `.ts` `.html` `.css` `.java` `.go` `.rs` `.cs` |
+| Font | Fonts | `.ttf` `.otf` `.woff` `.woff2` |
+| Altro | Everything else | the rest |
 
----
-
-## 🔧 Come funziona, tecnicamente
-
-[**docs/ARCHITECTURE.md**](docs/ARCHITECTURE.md) spiega il codice: struttura dei
-moduli, modello di concorrenza, algoritmo di pianificazione in due passate,
-rilevamento del backend AI, formato del log UNDO, e gli invarianti di sicurezza
-da non violare in una modifica.
-
-Vale la pena leggerlo prima di aprire una pull request: ogni invariante
-corrisponde a qualcosa che è già andato storto una volta.
+With AI classification on, documents can land in a meaningful category instead
+of the generic `Documenti`: Fatture (invoices), Contratti (contracts), Ricevute
+(receipts), Rapporti (reports), Manuali (manuals), Lettere (letters), CV,
+Presentazioni (presentations), Ricerca (research), Moduli (forms).
 
 ---
 
-## 🤝 Contribuire
+## 🔧 How it works, technically
 
-Le modifiche sono benvenute — la licenza ti autorizza esplicitamente a
-modificare il codice. Leggi [CONTRIBUTING.md](CONTRIBUTING.md) per
-l'impostazione dell'ambiente e il metodo di verifica delle modifiche che
-toccano lo spostamento dei file.
+[**docs/ARCHITECTURE.md**](docs/ARCHITECTURE.md) explains the code: module
+layout, concurrency model, the two-pass planning algorithm, AI backend
+detection, the undo log format, and the safety invariants a change must not
+violate.
+
+It's worth reading before opening a pull request: every invariant corresponds
+to something that has already gone wrong once.
 
 ---
 
-## 📄 Licenza
+## 🤝 Contributing
+
+Changes are welcome — the license explicitly permits modifying the code. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the development setup and for how to
+verify a change that touches file moving.
+
+---
+
+## 📄 License
 
 [PolyForm Noncommercial 1.0.0](LICENSE) — Copyright © 2026 Marber (MB8900).
 
-Libero per uso personale, studio, ricerca, hobby, enti pubblici e
-organizzazioni non profit. L'uso commerciale non è concesso.
+Free for personal use, study, research, hobby projects, public institutions and
+non-profit organizations. Commercial use is not granted.
 
-Dipendenze di terze parti, tutte con licenza permissiva: CustomTkinter (MIT),
+Third-party dependencies, all under permissive licenses: CustomTkinter (MIT),
 Send2Trash (BSD-3), pypdf (BSD-3), python-docx (MIT), Pillow (MIT-CMU),
 requests (Apache-2.0).
